@@ -103,7 +103,7 @@ export class CanvasComponent implements AfterViewInit, OnInit {
   }
 
   anchorHitTest(x: number, y: number) {
-    var dx, dy;
+    let dx, dy;
 
     // top-left
     dx = x - this.imageX;
@@ -212,8 +212,8 @@ export class CanvasComponent implements AfterViewInit, OnInit {
       this.mouseY = e.clientY - this.offsetY;
 
       // move the image by the amount of the latest drag
-      var dx = this.mouseX - this.startX;
-      var dy = this.mouseY - this.startY;
+      let dx = this.mouseX - this.startX;
+      let dy = this.mouseY - this.startY;
       this.imageX += dx;
       this.imageY += dy;
       this.imageRight += dx;
