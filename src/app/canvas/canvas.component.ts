@@ -1,5 +1,7 @@
-// The code in this section draws heavily from the answer in this SO question
-// https://stackoverflow.com/questions/19100009/dragging-and-resizing-an-image-on-html5-canvas
+// The code in this section is heavily influeced by this jsfiddle
+// http://jsfiddle.net/m1erickson/LAS8L/
+
+// Note to self, it may be necessary to update offsets with window or canvas changes
 
 import {
   Component,
@@ -27,7 +29,7 @@ const RR = RESIZER_RADIUS * RESIZER_RADIUS;
     '.meme_canvas { width: 800px; height: 600px; border: 2px solid red; }',
   ],
 })
-export class CanvasComponent implements AfterViewInit, OnInit {
+export class CanvasComponent implements AfterViewInit {
   @ViewChild('memeCanvas')
   canvas: ElementRef<HTMLCanvasElement>;
   context: CanvasRenderingContext2D;
@@ -206,8 +208,6 @@ export class CanvasComponent implements AfterViewInit, OnInit {
       // redraw the image with resizing anchors
       this.draw(true, true);
     } else if (this.draggingImage) {
-      let imageClick = false;
-
       this.mouseX = e.clientX - this.offsetX;
       this.mouseY = e.clientY - this.offsetY;
 
@@ -226,8 +226,6 @@ export class CanvasComponent implements AfterViewInit, OnInit {
       this.draw(false, true);
     }
   }
-
-  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     // Set the canvas context when the window is ready
