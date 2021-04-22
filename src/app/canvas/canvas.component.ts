@@ -12,13 +12,17 @@ import {
 const IMAGE =
   'http://de.spongepedia.org/images/thumb/47a_Clown.jpg/200px-47a_Clown.jpg';
 
-const PI2 = Math.PI * 2;
-const RESIZER_RADIUS = 2;
+const RESIZER_RADIUS = 3;
 const RR = RESIZER_RADIUS * RESIZER_RADIUS;
 
 @Component({
   selector: 'app-canvas',
-  template: `<canvas width="800" height="600" #memeCanvas></canvas>`,
+  template: `<canvas
+    class="meme_canvas"
+    width="800"
+    height="600"
+    #memeCanvas
+  ></canvas>`,
   styles: [
     '.meme_canvas { width: 800px; height: 600px; border: 2px solid red; }',
   ],
@@ -31,16 +35,15 @@ export class CanvasComponent implements AfterViewInit, OnInit {
   offsetY: number;
   startX: number;
   startY: number;
-  mouseX: number;
-  mouseY: number;
-  isDown = false;
-  draggingResizer = 0;
   imageX = 50;
   imageY = 50;
+  mouseX: number;
+  mouseY: number;
   imageWidth: number;
   imageHeight: number;
   imageRight: number;
   imageBottom: number;
+  draggingResizer = -1;
   draggingImage = false;
   img = new Image();
 
@@ -94,7 +97,7 @@ export class CanvasComponent implements AfterViewInit, OnInit {
 
   drawDragAnchor(x: number, y: number) {
     this.context.beginPath();
-    this.context.arc(x, y, RR, 0, PI2, false);
+    this.context.arc(x, y, RR, 0, Math.PI * 2, false);
     this.context.closePath();
     this.context.fill();
   }
