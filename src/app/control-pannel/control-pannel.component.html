@@ -6,8 +6,9 @@
         <input
           class="form-check-input"
           type="checkbox"
-          value=""
+          value="logo"
           id="checkbox_logo"
+          (change)="handleCheckBox($event)"
         />
         <label class="form-check-label" for="checkbox_log">Logo</label>
       </div>
@@ -16,8 +17,9 @@
         <input
           class="form-check-input"
           type="checkbox"
-          value=""
+          value="conference"
           id="checkbox_conf"
+          (change)="handleCheckBox($event)"
         />
         <label class="form-check-label" for="checkbox_conf">Conference</label>
       </div>
@@ -26,8 +28,9 @@
         <input
           class="form-check-input"
           type="checkbox"
-          value=""
+          value="website"
           id="checkbox_website"
+          (change)="handleCheckBox($event)"
         />
         <label class="form-check-label" for="checkbox_website">Website</label>
       </div>
@@ -36,16 +39,33 @@
 
   <div class="row mb-3 gx-0">
     <div col="col-auto">
-      <button class="btn btn-primary btn-sm" role="button">
+      <button
+        (click)="handleAddTextBtn()"
+        class="btn btn-primary btn-sm"
+        role="button"
+      >
         <i class="fas fa-plus"></i> Add text
       </button>
     </div>
   </div>
 
-  <div class="row align-items-center justify-content-between gx-0">
+  <div
+    *ngFor="let txt of texts; let i = index"
+    class="row align-items-center justify-content-between gx-0"
+  >
     <div class="input-group">
-      <input type="text" class="form-control" placeholder="Enter text" />
-      <button class="btn btn-danger btn-sm" role="button">
+      <input
+        (change)="handleUpdateText($event, i)"
+        type="text"
+        class="form-control"
+        placeholder="Enter text"
+        [ngModel]="txt"
+      />
+      <button
+        (click)="handleDeleteText(i)"
+        class="btn btn-danger btn-sm"
+        role="button"
+      >
         <i class="fas fa-trash-alt"></i>
       </button>
     </div>
