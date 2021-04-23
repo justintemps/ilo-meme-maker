@@ -6,11 +6,13 @@ import { AppComponent } from './app.component';
 import { CanvasComponent } from './canvas/canvas.component';
 import { MdbModule } from 'mdb-angular-ui-kit';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ControlPannelComponent } from './control-pannel/control-pannel.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CanvasComponent
+    CanvasComponent,
+    ControlPannelComponent
   ],
   imports: [
     BrowserModule,

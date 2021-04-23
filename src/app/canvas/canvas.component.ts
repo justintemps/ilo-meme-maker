@@ -21,7 +21,6 @@ const RR = RESIZER_RADIUS * RESIZER_RADIUS;
   styles: [
     `
       .meme_canvas_container {
-        margin: 1rem 0;
         width: 100%;
         height: 100%;
         display: flex;
