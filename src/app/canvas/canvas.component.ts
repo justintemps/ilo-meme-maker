@@ -1,15 +1,9 @@
-// The code in this section is heavily influeced by this jsfiddle
+// The code in this section is inspired by this jsfiddle
 // http://jsfiddle.net/m1erickson/LAS8L/
 
-// Note to self, it may be necessary to update offsets with window or canvas changes
+//@TODO handle window and canvas resize
 
-import {
-  Component,
-  OnInit,
-  AfterViewInit,
-  ViewChild,
-  ElementRef,
-} from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 
 const IMAGE =
   'http://de.spongepedia.org/images/thumb/47a_Clown.jpg/200px-47a_Clown.jpg';
@@ -19,14 +13,27 @@ const RR = RESIZER_RADIUS * RESIZER_RADIUS;
 
 @Component({
   selector: 'app-canvas',
-  template: `<canvas
-    class="meme_canvas"
-    width="800"
-    height="600"
-    #memeCanvas
-  ></canvas>`,
+  template: `
+    <div class="meme_canvas_container">
+      <canvas width="600" height="335" class="meme_canvas" #memeCanvas></canvas>
+    </div>
+  `,
   styles: [
-    '.meme_canvas { width: 800px; height: 600px; border: 2px solid red; }',
+    `
+      .meme_canvas_container {
+        margin: 1rem 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--ilo-grey);
+      }
+
+      .meme_canvas {
+        background-color: var(--ilo-white);
+      }
+    `,
   ],
 })
 export class CanvasComponent implements AfterViewInit {

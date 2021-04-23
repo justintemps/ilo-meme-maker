@@ -1,1 +1,67 @@
 /* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Overpass:ital,wght@0,400;0,700;1,700&display=swap");
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/solid.scss";
+@import "~@fortawesome/fontawesome-free/scss/regular.scss";
+@import "~@fortawesome/fontawesome-free/scss/brands.scss";
+
+// Bring in mdb styles
+@import "~mdb-angular-ui-kit/assets/scss/mdb.scss";
+
+// Colors
+:root {
+  --ilo-blue: #1e2dbe;
+  --ilo-legacy-blue: #151f85;
+  --ilo-dark-blue: #230050;
+  --ilo-mauve: #584275;
+  --ilo-red: #fa3c4b;
+  --ilo-white: #fff;
+  --ilo-white-unselected: #b6b6b6;
+  --ilo-turquoise: #05d2d2;
+  --ilo-green: #8ce164;
+  --ilo-yellow: #ffcd2d;
+  --ilo-yellow-hover: #ffdc6c;
+  --ilo-purple: #960a55;
+  --ilo-lilac: #eeebf2;
+  --ilo-pale-grey: #eceeff;
+  --ilo-grey: #ebf5fd;
+  --ilo-dark-grey: #a3a3a3;
+  --ilo-canary: #d4e7f5;
+  --type-black: #242323;
+  --type-grey: #707071;
+}
+
+// Typography
+.ilo-primary-text {
+  color: var(--ilo-dark-blue);
+}
+
+.ilo-secondary-text {
+  color: var(--ilo-blue);
+}
+
+.ilo-alert-text {
+  color: var(--ilo-red);
+}
+
+h1,
+h2,
+h3,
+h3,
+h5 {
+  font-family: "Overpass", sans-serif;
+  font-weight: 700;
+}
+
+p,
+div,
+span,
+button {
+  font-family: "Noto Sans", sans-serif;
+  color: var(--type-black);
+}
+
+// Layout
+main {
+  padding-top: 2rem;
+}
