@@ -2,11 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import {
-  MemeProvider,
+  CardProvider,
   Branding,
   Speaker,
   Quote,
-} from '../meme-provider.service';
+} from '../card-provider.service';
 
 @Component({
   selector: 'app-control-pannel',
@@ -21,7 +21,7 @@ export class ControlPannelComponent implements OnInit, OnDestroy {
   speakerSub: Subscription;
   quoteSub: Subscription;
 
-  constructor(private memeProvider: MemeProvider) {}
+  constructor(private cardProvider: CardProvider) {}
 
   handleCheckBox(event: Event) {
     // Cast the target as an Input
@@ -31,7 +31,7 @@ export class ControlPannelComponent implements OnInit, OnDestroy {
     // See if the input is checked
     const checked = element.checked;
     // Update the branding property
-    return this.memeProvider.updateBranding({
+    return this.cardProvider.updateBranding({
       [option]: checked,
     });
   }
@@ -39,22 +39,22 @@ export class ControlPannelComponent implements OnInit, OnDestroy {
   handleUpdateSpeaker(event: Event) {
     const element = event?.currentTarget as HTMLInputElement;
     const { name, value } = element;
-    this.memeProvider.updateSpeaker({ [name]: value });
+    this.cardProvider.updateSpeaker({ [name]: value });
   }
 
   handleUpdateQuote(event: Event) {
     const element = event?.currentTarget as HTMLInputElement;
-    this.memeProvider.updateQuote({ content: element.value });
+    this.cardProvider.updateQuote({ content: element.value });
   }
 
   ngOnInit(): void {
-    this.brandingSub = this.memeProvider.branding.subscribe((branding) => {
+    this.brandingSub = this.cardProvider.branding.subscribe((branding) => {
       this.branding = branding;
     });
-    this.speakerSub = this.memeProvider.speaker.subscribe((speaker) => {
+    this.speakerSub = this.cardProvider.speaker.subscribe((speaker) => {
       this.speaker = speaker;
     });
-    this.quoteSub = this.memeProvider.quote.subscribe((quote) => {
+    this.quoteSub = this.cardProvider.quote.subscribe((quote) => {
       this.quote = quote;
     });
   }

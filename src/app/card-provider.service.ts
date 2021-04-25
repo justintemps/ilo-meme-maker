@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 export interface Branding {
   logo: boolean;
-  conference: boolean;
+  background: boolean;
   website: boolean;
 }
 
@@ -25,11 +24,11 @@ export interface Quote {
 @Injectable({
   providedIn: 'root',
 })
-export class MemeProvider {
+export class CardProvider {
   // Holds the branding options
   private brandingSrc = new BehaviorSubject({
     logo: false,
-    conference: false,
+    background: false,
     website: false,
   });
   branding: Observable<Branding> = this.brandingSrc.asObservable();
@@ -61,6 +60,7 @@ export class MemeProvider {
   updateSpeaker(update: {}) {
     const speaker = this.speakerSrc.getValue();
     this.speakerSrc.next({ ...speaker, ...update });
+    console.log(this.speakerSrc.getValue());
   }
 
   // Updates the profile image
@@ -73,5 +73,6 @@ export class MemeProvider {
   updateQuote(update: {}) {
     const quote = this.quoteSrc.getValue();
     this.quoteSrc.next({ ...quote, ...update });
+    console.log(this.quoteSrc.getValue());
   }
 }

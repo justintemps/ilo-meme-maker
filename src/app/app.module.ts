@@ -8,7 +8,7 @@ import { CanvasComponent } from './canvas/canvas.component';
 import { MdbModule } from 'mdb-angular-ui-kit';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ControlPannelComponent } from './control-pannel/control-pannel.component';
-import { MemeProvider } from './meme-provider.service';
+import { CardProvider } from './card-provider.service';
 
 @NgModule({
   declarations: [AppComponent, CanvasComponent, ControlPannelComponent],
@@ -19,7 +19,7 @@ import { MemeProvider } from './meme-provider.service';
     BrowserAnimationsModule,
     FormsModule,
   ],
-  providers: [MemeProvider],
+  providers: [CardProvider],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

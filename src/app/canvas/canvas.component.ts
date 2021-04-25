@@ -10,10 +10,12 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { MemeProvider, Branding } from '../meme-provider.service';
+import { CardProvider, Branding } from '../card-provider.service';
 
 const IMAGE =
-  'http://de.spongepedia.org/images/thumb/47a_Clown.jpg/200px-47a_Clown.jpg';
+  'https://www.geneve-int.ch/sites/default/files/styles/scale_1000/public/2019-07/Focus-2015-mar-Ryder.jpg?itok=3DBjFAlk';
+
+const LOGO = '/assets/ilo-logo-white-en-gb.svg';
 
 const RESIZER_RADIUS = 3;
 const RR = RESIZER_RADIUS * RESIZER_RADIUS;
@@ -61,13 +63,12 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   imageBottom: number;
   draggingResizer = -1;
   draggingImage = false;
-  img = new Image();
-
-  // Properties controlled by Services
+  speakerImg = new Image();
+  logoImg = new Image();
   branding: Branding;
   brandingSub: Subscription;
 
-  constructor(private memeProvider: MemeProvider) {}
+  constructor(private cardProvider: CardProvider) {}
 
   updateOffsets() {
     const boundingBox = this.canvas.nativeElement.getBoundingClientRect();
@@ -86,16 +87,26 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
     // draw the image
     this.context.drawImage(
-      this.img,
+      this.speakerImg,
       0,
       0,
-      this.img.width,
-      this.img.height,
+      this.speakerImg.width,
+      this.speakerImg.height,
       this.imageX,
       this.imageY,
       this.imageWidth,
       this.imageHeight
     );
+
+    // Draw the background
+    if (this.branding.background) {
+      this.drawBackground();
+    }
+
+    // Draw the logo
+    if (this.branding.logo) {
+      this.drawLogo();
+    }
 
     // optionally draw the draggable anchors
     if (withAnchors) {
@@ -117,18 +128,27 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
+  drawBackground() {
+    this.context.beginPath();
+    this.context.moveTo(0, 0);
+    this.context.lineTo(0, 335);
+    this.context.lineTo(430, 335);
+    this.context.lineTo(280, 0);
+    this.context.closePath();
+    this.context.fillStyle = '#1e2dbe';
+    this.context.fill();
+  }
+
+  drawLogo() {
+    this.context.drawImage(this.logoImg, 10, 10, 114, 46);
+  }
+
   drawDragAnchor(x: number, y: number) {
     this.context.beginPath();
     this.context.arc(x, y, RR, 0, Math.PI * 2, false);
     this.context.closePath();
+    this.context.fillStyle = '#fa3c4b';
     this.context.fill();
-  }
-
-  drawTexts(texts: string[]) {
-    texts.forEach((text) => {
-      this.context.font = '20px Arial';
-      this.context.fillText(text, 50, 50);
-    });
   }
 
   anchorHitTest(x: number, y: number) {
@@ -262,14 +282,16 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
     this.updateOffsets();
 
-    this.img.src = IMAGE;
-    this.img.onload = () => {
-      this.imageWidth = this.img.width;
-      this.imageHeight = this.img.height;
+    this.speakerImg.src = IMAGE;
+    this.speakerImg.onload = () => {
+      this.imageWidth = this.speakerImg.width;
+      this.imageHeight = this.speakerImg.height;
       this.imageRight = this.imageX + this.imageWidth;
       this.imageBottom = this.imageY + this.imageHeight;
       this.draw(true, false);
     };
+
+    this.logoImg.src = LOGO;
 
     this.canvas.nativeElement.addEventListener('mousedown', (e) => {
       this.handleMouseDown(e);
@@ -289,8 +311,11 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.brandingSub = this.memeProvider.branding.subscribe((branding) => {
+    this.brandingSub = this.cardProvider.branding.subscribe((branding) => {
       this.branding = branding;
+      if (this.canvas && this.context) {
+        this.draw(false, false);
+      }
     });
   }
 
