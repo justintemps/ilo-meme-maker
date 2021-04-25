@@ -9,8 +9,9 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { CanvasTextWrapper } from 'canvas-text-wrapper';
 
-import { CardProvider, Branding } from '../card-provider.service';
+import { CardProvider, Branding, Quote } from '../card-provider.service';
 
 const IMAGE =
   'https://www.geneve-int.ch/sites/default/files/styles/scale_1000/public/2019-07/Focus-2015-mar-Ryder.jpg?itok=3DBjFAlk';
@@ -67,6 +68,8 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   logoImg = new Image();
   branding: Branding;
   brandingSub: Subscription;
+  quote: Quote;
+  quoteSub: Subscription;
 
   constructor(private cardProvider: CardProvider) {}
 
@@ -108,6 +111,8 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       this.drawLogo();
     }
 
+    this.drawQuote();
+
     // optionally draw the draggable anchors
     if (withAnchors) {
       this.drawDragAnchor(this.imageX, this.imageY);
@@ -137,6 +142,15 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     this.context.closePath();
     this.context.fillStyle = '#1e2dbe';
     this.context.fill();
+  }
+
+  drawQuote() {
+    this.context.fillStyle = '#fff';
+    CanvasTextWrapper(this.canvas.nativeElement, this.quote.content, {
+      offsetY: 100,
+      offsetX: 50,
+      maxWidth: 300,
+    });
   }
 
   drawLogo() {
@@ -313,6 +327,13 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   ngOnInit(): void {
     this.brandingSub = this.cardProvider.branding.subscribe((branding) => {
       this.branding = branding;
+      if (this.canvas && this.context) {
+        this.draw(false, false);
+      }
+    });
+
+    this.quoteSub = this.cardProvider.quote.subscribe((quote) => {
+      this.quote = quote;
       if (this.canvas && this.context) {
         this.draw(false, false);
       }
