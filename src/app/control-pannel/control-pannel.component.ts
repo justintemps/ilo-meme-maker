@@ -19,14 +19,14 @@ export class ControlPannelComponent implements OnInit {
   handleCheckBox(event: Event) {
     // Cast the target as an Input
     const element = event.currentTarget as HTMLInputElement;
-    // Get the branding property from the input value
-    const prop = element.value;
+    // Get the branding option from the input value
+    const option = element.value;
     // See if the input is checked
     const checked = element.checked;
     // Update the branding property
     return this.memeProvider.updateBranding({
       ...this.branding,
-      ...{ [prop]: checked },
+      ...{ [option]: checked },
     });
   }
 
