@@ -8,6 +8,20 @@ export interface Branding {
   website: boolean;
 }
 
+export interface Speaker {
+  name: string;
+  title: string;
+}
+
+export interface ProfileImg {
+  src: string;
+  alt: string;
+}
+
+export interface Quote {
+  content: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -20,38 +34,44 @@ export class MemeProvider {
   });
   branding: Observable<Branding> = this.brandingSrc.asObservable();
 
-  // Holds the texts
-  private textsSrc = new BehaviorSubject(['']);
-  texts: Observable<string[]> = this.textsSrc.asObservable();
+  // Holds the speaker info
+  private speakerSrc = new BehaviorSubject({
+    name: '',
+    title: '',
+  });
+  speaker: Observable<Speaker> = this.speakerSrc.asObservable();
 
-  // getTexts(): Observable<string[]> {
-  //   return this.textsSrc.asObservable();
-  // }
+  // Holds the quote text
+  private quoteSrc = new BehaviorSubject({ content: '' });
+  quote: Observable<Quote> = this.quoteSrc.asObservable();
+
+  // Holds the image data
+  private profileImgSrc = new BehaviorSubject({ src: '', alt: '' });
+  profileImg: Observable<ProfileImg> = this.profileImgSrc.asObservable();
 
   constructor() {}
 
   // Updates the branding properties
-  updateBranding(branding: Branding) {
-    this.brandingSrc.next(branding);
+  updateBranding(update: {}) {
+    const branding = this.brandingSrc.getValue();
+    this.brandingSrc.next({ ...branding, ...update });
   }
 
-  // Adds a line of text to the meme
-  addTextLine() {
-    this.textsSrc.next(this.textsSrc.getValue().concat(''));
+  // Updates the speaker details
+  updateSpeaker(update: {}) {
+    const speaker = this.speakerSrc.getValue();
+    this.speakerSrc.next({ ...speaker, ...update });
   }
 
-  // Updates a line of thext
-  updateTextLine(content: string, index: number) {
-    const texts = this.textsSrc.getValue();
-    texts[index] = content;
-    this.textsSrc.next(texts);
+  // Updates the profile image
+  updateProfileImg(update: {}) {
+    const profileImg = this.profileImgSrc.getValue();
+    this.profileImgSrc.next({ ...profileImg, ...update });
   }
 
-  // Removes a line of text
-  removeTextLine(index: number) {
-    console.log(index);
-    console.log(this.textsSrc.getValue());
-    const texts = this.textsSrc.getValue().filter((txt, i) => i !== index);
-    this.textsSrc.next(texts);
+  // Updates the quote
+  updateQuote(update: {}) {
+    const quote = this.quoteSrc.getValue();
+    this.quoteSrc.next({ ...quote, ...update });
   }
 }

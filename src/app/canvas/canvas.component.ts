@@ -65,9 +65,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
   // Properties controlled by Services
   branding: Branding;
-  texts: string[];
   brandingSub: Subscription;
-  textsSub: Subscription;
 
   constructor(private memeProvider: MemeProvider) {}
 
@@ -117,8 +115,6 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       this.context.closePath();
       this.context.stroke();
     }
-
-    this.drawTexts(this.texts);
   }
 
   drawDragAnchor(x: number, y: number) {
@@ -296,16 +292,9 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     this.brandingSub = this.memeProvider.branding.subscribe((branding) => {
       this.branding = branding;
     });
-    this.textsSub = this.memeProvider.texts.subscribe((texts) => {
-      this.texts = texts;
-      if (this.canvas && this.context) {
-        this.draw(false, false);
-      }
-    });
   }
 
   ngOnDestroy(): void {
     this.brandingSub.unsubscribe();
-    this.textsSub.unsubscribe();
   }
 }

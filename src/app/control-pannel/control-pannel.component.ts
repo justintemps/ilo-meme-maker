@@ -1,7 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { MemeProvider, Branding } from '../meme-provider.service';
+import {
+  MemeProvider,
+  Branding,
+  Speaker,
+  Quote,
+} from '../meme-provider.service';
 
 @Component({
   selector: 'app-control-pannel',
@@ -10,9 +15,11 @@ import { MemeProvider, Branding } from '../meme-provider.service';
 })
 export class ControlPannelComponent implements OnInit, OnDestroy {
   branding: Branding;
-  texts: string[];
+  speaker: Speaker;
+  quote: Quote;
   brandingSub: Subscription;
-  textsSub: Subscription;
+  speakerSub: Subscription;
+  quoteSub: Subscription;
 
   constructor(private memeProvider: MemeProvider) {}
 
@@ -25,36 +32,36 @@ export class ControlPannelComponent implements OnInit, OnDestroy {
     const checked = element.checked;
     // Update the branding property
     return this.memeProvider.updateBranding({
-      ...this.branding,
-      ...{ [option]: checked },
+      [option]: checked,
     });
   }
 
-  handleAddTextBtn() {
-    this.memeProvider.addTextLine();
+  handleUpdateSpeaker(event: Event) {
+    const element = event?.currentTarget as HTMLInputElement;
+    const { name, value } = element;
+    this.memeProvider.updateSpeaker({ [name]: value });
   }
 
-  handleUpdateText(event: Event, index: number) {
-    const element = event.currentTarget as HTMLInputElement;
-    const content = element.value;
-    this.memeProvider.updateTextLine(content, index);
-  }
-
-  handleDeleteText(index: number) {
-    this.memeProvider.removeTextLine(index);
+  handleUpdateQuote(event: Event) {
+    const element = event?.currentTarget as HTMLInputElement;
+    this.memeProvider.updateQuote({ content: element.value });
   }
 
   ngOnInit(): void {
     this.brandingSub = this.memeProvider.branding.subscribe((branding) => {
       this.branding = branding;
     });
-    this.textsSub = this.memeProvider.texts.subscribe((texts) => {
-      this.texts = texts;
+    this.speakerSub = this.memeProvider.speaker.subscribe((speaker) => {
+      this.speaker = speaker;
+    });
+    this.quoteSub = this.memeProvider.quote.subscribe((quote) => {
+      this.quote = quote;
     });
   }
 
   ngOnDestroy() {
     this.brandingSub.unsubscribe();
-    this.textsSub.unsubscribe();
+    this.speakerSub.unsubscribe();
+    this.quoteSub.unsubscribe();
   }
 }
