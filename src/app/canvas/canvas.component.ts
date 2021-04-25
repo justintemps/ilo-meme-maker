@@ -1,9 +1,16 @@
-// The code in this section is inspired by this jsfiddle
-// http://jsfiddle.net/m1erickson/LAS8L/
-
 //@TODO handle window and canvas resize
 
-import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
+import { Subscription } from 'rxjs';
+
+import { MemeProvider, Branding } from '../meme-provider.service';
 
 const IMAGE =
   'http://de.spongepedia.org/images/thumb/47a_Clown.jpg/200px-47a_Clown.jpg';
@@ -35,8 +42,9 @@ const RR = RESIZER_RADIUS * RESIZER_RADIUS;
     `,
   ],
 })
-export class CanvasComponent implements AfterViewInit {
+export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('memeCanvas')
+  // Properties that directly control the canvas
   canvas: ElementRef<HTMLCanvasElement>;
   context: CanvasRenderingContext2D;
   offsetX: number;
@@ -54,6 +62,14 @@ export class CanvasComponent implements AfterViewInit {
   draggingResizer = -1;
   draggingImage = false;
   img = new Image();
+
+  // Properties controlled by Services
+  branding: Branding;
+  texts: string[];
+  brandingSub: Subscription;
+  textsSub: Subscription;
+
+  constructor(private memeProvider: MemeProvider) {}
 
   updateOffsets() {
     const boundingBox = this.canvas.nativeElement.getBoundingClientRect();
@@ -101,6 +117,8 @@ export class CanvasComponent implements AfterViewInit {
       this.context.closePath();
       this.context.stroke();
     }
+
+    this.drawTexts(this.texts);
   }
 
   drawDragAnchor(x: number, y: number) {
@@ -108,6 +126,13 @@ export class CanvasComponent implements AfterViewInit {
     this.context.arc(x, y, RR, 0, Math.PI * 2, false);
     this.context.closePath();
     this.context.fill();
+  }
+
+  drawTexts(texts: string[]) {
+    texts.forEach((text) => {
+      this.context.font = '20px Arial';
+      this.context.fillText(text, 50, 50);
+    });
   }
 
   anchorHitTest(x: number, y: number) {
@@ -265,5 +290,22 @@ export class CanvasComponent implements AfterViewInit {
     this.canvas.nativeElement.addEventListener('mouseout', (e) => {
       this.handleMouseOut();
     });
+  }
+
+  ngOnInit(): void {
+    this.brandingSub = this.memeProvider.branding.subscribe((branding) => {
+      this.branding = branding;
+    });
+    this.textsSub = this.memeProvider.texts.subscribe((texts) => {
+      this.texts = texts;
+      if (this.canvas && this.context) {
+        this.draw(false, false);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.brandingSub.unsubscribe();
+    this.textsSub.unsubscribe();
   }
 }

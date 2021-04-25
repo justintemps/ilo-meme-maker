@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MemeProvider, Branding } from '../meme-provider.service';
 import { Subscription } from 'rxjs';
+
+import { MemeProvider, Branding } from '../meme-provider.service';
 
 @Component({
   selector: 'app-control-pannel',
   templateUrl: './control-pannel.component.html',
   styleUrls: ['./control-pannel.component.scss'],
-  providers: [MemeProvider],
 })
-export class ControlPannelComponent implements OnInit {
+export class ControlPannelComponent implements OnInit, OnDestroy {
   branding: Branding;
   texts: string[];
   brandingSub: Subscription;
@@ -37,7 +37,6 @@ export class ControlPannelComponent implements OnInit {
   handleUpdateText(event: Event, index: number) {
     const element = event.currentTarget as HTMLInputElement;
     const content = element.value;
-    console.log({ content, index });
     this.memeProvider.updateTextLine(content, index);
   }
 
@@ -46,15 +45,16 @@ export class ControlPannelComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.brandingSub = this.memeProvider.branding.subscribe(
-      (branding) => (this.branding = branding)
-    );
-    this.textsSub = this.memeProvider.texts.subscribe(
-      (texts) => (this.texts = texts)
-    );
+    this.brandingSub = this.memeProvider.branding.subscribe((branding) => {
+      this.branding = branding;
+    });
+    this.textsSub = this.memeProvider.texts.subscribe((texts) => {
+      this.texts = texts;
+    });
   }
 
   ngOnDestroy() {
     this.brandingSub.unsubscribe();
+    this.textsSub.unsubscribe();
   }
 }

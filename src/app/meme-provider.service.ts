@@ -24,6 +24,10 @@ export class MemeProvider {
   private textsSrc = new BehaviorSubject(['']);
   texts: Observable<string[]> = this.textsSrc.asObservable();
 
+  // getTexts(): Observable<string[]> {
+  //   return this.textsSrc.asObservable();
+  // }
+
   constructor() {}
 
   // Updates the branding properties
