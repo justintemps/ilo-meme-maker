@@ -7,7 +7,6 @@ import {
   ElementRef,
   OnInit,
   OnDestroy,
-  AfterContentInit,
   ChangeDetectorRef,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -20,11 +19,9 @@ import {
   Speaker,
 } from '../card-provider.service';
 
-const IMAGE =
-  'https://www.geneve-int.ch/sites/default/files/styles/scale_1000/public/2019-07/Focus-2015-mar-Ryder.jpg?itok=3DBjFAlk';
-
+// Set up a few constants
+const IMAGE = '/assets/Focus-2015-mar-Ryder.jpg';
 const LOGO = '/assets/ilo-logo-white-en-gb.svg';
-
 const RESIZER_RADIUS = 3;
 const RR = RESIZER_RADIUS * RESIZER_RADIUS;
 
@@ -350,6 +347,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Instantiate our images
     this.speakerImg.src = IMAGE;
     this.speakerImg.onload = () => {
       this.imageWidth = this.speakerImg.width;
@@ -360,6 +358,8 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     };
 
     this.logoImg.src = LOGO;
+
+    // Set up our subscriptions
     this.brandingSub = this.cardProvider.branding.subscribe((branding) => {
       this.branding = branding;
       if (this.canvas && this.context) {
@@ -384,6 +384,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.brandingSub.unsubscribe();
+    this.speakerSub.unsubscribe();
     this.quoteSub.unsubscribe();
   }
 }

@@ -1,0 +1,10 @@
+{
+  "/assets": {
+    "target": "/assets/*",
+    "secure": true,
+    "changeOrigin": false,
+    "pathRewrite": {
+      "^/assets": ""
+    }
+  }
+}

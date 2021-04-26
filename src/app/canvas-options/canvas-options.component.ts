@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import * as download from 'downloadjs';
 
 @Component({
   selector: 'app-canvas-options',
@@ -11,7 +12,7 @@ export class CanvasOptionsComponent implements OnInit {
 
   downloadCard() {
     const img = this.canvas.nativeElement.toDataURL('image/png');
-    document.write('<img src="' + img + '"/>');
+    download(img, 'quote_card', 'image/png');
   }
 
   constructor() {}
