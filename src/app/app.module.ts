@@ -9,9 +9,10 @@ import { MdbModule } from 'mdb-angular-ui-kit';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ControlPannelComponent } from './control-pannel/control-pannel.component';
 import { CardProvider } from './card-provider.service';
+import { CanvasOptionsComponent } from './canvas-options/canvas-options.component';
 
 @NgModule({
-  declarations: [AppComponent, CanvasComponent, ControlPannelComponent],
+  declarations: [AppComponent, CanvasComponent, ControlPannelComponent, CanvasOptionsComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
