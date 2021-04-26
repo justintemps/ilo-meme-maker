@@ -7,11 +7,18 @@ import {
   ElementRef,
   OnInit,
   OnDestroy,
+  AfterContentInit,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CanvasTextWrapper } from 'canvas-text-wrapper';
 
-import { CardProvider, Branding, Quote } from '../card-provider.service';
+import {
+  CardProvider,
+  Branding,
+  Quote,
+  Speaker,
+} from '../card-provider.service';
 
 const IMAGE =
   'https://www.geneve-int.ch/sites/default/files/styles/scale_1000/public/2019-07/Focus-2015-mar-Ryder.jpg?itok=3DBjFAlk';
@@ -23,33 +30,19 @@ const RR = RESIZER_RADIUS * RESIZER_RADIUS;
 
 @Component({
   selector: 'app-canvas',
-  template: `
-    <div class="meme_canvas_container">
-      <canvas width="600" height="335" class="meme_canvas" #memeCanvas></canvas>
-    </div>
-  `,
-  styles: [
-    `
-      .meme_canvas_container {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: var(--ilo-grey);
-      }
-
-      .meme_canvas {
-        background-color: var(--ilo-white);
-      }
-    `,
-  ],
+  templateUrl: './canvas.component.html',
+  styleUrls: ['./canvas.component.scss'],
 })
 export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
-  @ViewChild('memeCanvas')
-  // Properties that directly control the canvas
-  canvas: ElementRef<HTMLCanvasElement>;
+  // Gets a reference to the canvas element
+  @ViewChild('memeCanvas') canvas: ElementRef<HTMLCanvasElement>;
   context: CanvasRenderingContext2D;
+
+  // The images to load into our canvas
+  speakerImg = new Image();
+  logoImg = new Image();
+
+  // Values we need for dragging and resizing operations
   offsetX: number;
   offsetY: number;
   startX: number;
@@ -64,14 +57,19 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   imageBottom: number;
   draggingResizer = -1;
   draggingImage = false;
-  speakerImg = new Image();
-  logoImg = new Image();
-  branding: Branding;
-  brandingSub: Subscription;
-  quote: Quote;
-  quoteSub: Subscription;
 
-  constructor(private cardProvider: CardProvider) {}
+  // Data that comes from the service
+  brandingSub: Subscription;
+  quoteSub: Subscription;
+  speakerSub: Subscription;
+  branding: Branding;
+  quote: Quote;
+  speaker: Speaker;
+
+  constructor(
+    private cardProvider: CardProvider,
+    private cd: ChangeDetectorRef
+  ) {}
 
   updateOffsets() {
     const boundingBox = this.canvas.nativeElement.getBoundingClientRect();
@@ -111,7 +109,14 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       this.drawLogo();
     }
 
+    // Write the Quote text
     this.drawQuote();
+
+    // Write the Speaker text
+    this.drawSpeaker();
+
+    // Write the speaker's title
+    this.drawTitle();
 
     // optionally draw the draggable anchors
     if (withAnchors) {
@@ -133,6 +138,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
+  // Draws the background
   drawBackground() {
     this.context.beginPath();
     this.context.moveTo(0, 0);
@@ -144,19 +150,42 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     this.context.fill();
   }
 
+  // Draws the quote
   drawQuote() {
     this.context.fillStyle = '#fff';
     CanvasTextWrapper(this.canvas.nativeElement, this.quote.content, {
       offsetY: 100,
       offsetX: 50,
+      maxWidth: 265,
+    });
+  }
+
+  // Draws the speaker
+  drawSpeaker() {
+    this.context.fillStyle = '#fff';
+    CanvasTextWrapper(this.canvas.nativeElement, this.speaker.name, {
+      offsetY: 260,
+      offsetX: 50,
       maxWidth: 300,
     });
   }
 
+  // Draws the title
+  drawTitle() {
+    this.context.fillStyle = '#fff';
+    CanvasTextWrapper(this.canvas.nativeElement, this.speaker.title, {
+      offsetY: 280,
+      offsetX: 50,
+      maxWidth: 300,
+    });
+  }
+
+  // Draws the logo
   drawLogo() {
     this.context.drawImage(this.logoImg, 10, 10, 114, 46);
   }
 
+  // Draws anchors for resizing
   drawDragAnchor(x: number, y: number) {
     this.context.beginPath();
     this.context.arc(x, y, RR, 0, Math.PI * 2, false);
@@ -165,6 +194,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     this.context.fill();
   }
 
+  // See if we clicked on an anchor
   anchorHitTest(x: number, y: number) {
     let dx, dy;
 
@@ -195,6 +225,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     return -1;
   }
 
+  // See if we clicked on the draggable image
   hitImage(x: number, y: number) {
     return (
       x > this.imageX &&
@@ -296,17 +327,6 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
     this.updateOffsets();
 
-    this.speakerImg.src = IMAGE;
-    this.speakerImg.onload = () => {
-      this.imageWidth = this.speakerImg.width;
-      this.imageHeight = this.speakerImg.height;
-      this.imageRight = this.imageX + this.imageWidth;
-      this.imageBottom = this.imageY + this.imageHeight;
-      this.draw(true, false);
-    };
-
-    this.logoImg.src = LOGO;
-
     this.canvas.nativeElement.addEventListener('mousedown', (e) => {
       this.handleMouseDown(e);
     });
@@ -322,11 +342,33 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     this.canvas.nativeElement.addEventListener('mouseout', (e) => {
       this.handleMouseOut();
     });
+
+    // We need this to make sure that the reference to the ViewChild
+    // stays current when we pass it to child components. More info here:
+    // https://angular.io/errors/NG0100
+    this.cd.detectChanges();
   }
 
   ngOnInit(): void {
+    this.speakerImg.src = IMAGE;
+    this.speakerImg.onload = () => {
+      this.imageWidth = this.speakerImg.width;
+      this.imageHeight = this.speakerImg.height;
+      this.imageRight = this.imageX + this.imageWidth;
+      this.imageBottom = this.imageY + this.imageHeight;
+      this.draw(true, false);
+    };
+
+    this.logoImg.src = LOGO;
     this.brandingSub = this.cardProvider.branding.subscribe((branding) => {
       this.branding = branding;
+      if (this.canvas && this.context) {
+        this.draw(false, false);
+      }
+    });
+
+    this.speakerSub = this.cardProvider.speaker.subscribe((speaker) => {
+      this.speaker = speaker;
       if (this.canvas && this.context) {
         this.draw(false, false);
       }
@@ -342,5 +384,6 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.brandingSub.unsubscribe();
+    this.quoteSub.unsubscribe();
   }
 }
