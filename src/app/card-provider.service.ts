@@ -60,7 +60,6 @@ export class CardProvider {
   updateSpeaker(update: {}) {
     const speaker = this.speakerSrc.getValue();
     this.speakerSrc.next({ ...speaker, ...update });
-    console.log(this.speakerSrc.getValue());
   }
 
   // Updates the profile image
@@ -73,6 +72,5 @@ export class CardProvider {
   updateQuote(update: {}) {
     const quote = this.quoteSrc.getValue();
     this.quoteSrc.next({ ...quote, ...update });
-    console.log(this.quoteSrc.getValue());
   }
 }
