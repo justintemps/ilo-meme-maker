@@ -1,7 +1,19 @@
 <div class="btn-group btn-group-sm">
-  <button class="btn btn-primary">Upload Image</button>
-  <button class="btn btn-danger">Clear Canvas</button>
-  <button (click)="downloadCard()" class="btn btn-success">
+  <label for="addImage">
+    <span class="btn btn-primary"
+      >Upload Image
+      <input
+        id="addImage"
+        type="file"
+        value="Upload Image"
+        (change)="handleAddImage($event)"
+      />
+    </span>
+  </label>
+  <button (click)="handleClearCanvas()" class="btn btn-danger">
+    Clear Canvas
+  </button>
+  <button (click)="handleDownload()" class="btn btn-success">
     Download Card
   </button>
 </div>

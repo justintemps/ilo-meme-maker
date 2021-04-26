@@ -74,14 +74,22 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     this.offsetY = boundingBox.top;
   }
 
+  handleAddImage(inputEvent: Event) {
+    const reader = new FileReader();
+    const input = inputEvent.target as HTMLInputElement;
+    reader.onload = (readerEvent: Event) => {
+      const readerTarget = readerEvent.target as FileReader;
+
+      this.speakerImg.src = readerTarget.result as string;
+    };
+    if (input.files) {
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
   draw(withAnchors: boolean, withBorders: boolean) {
     // clear the canvas
-    this.context.clearRect(
-      0,
-      0,
-      this.canvas.nativeElement.width,
-      this.canvas.nativeElement.height
-    );
+    this.clearCanvas();
 
     // draw the image
     this.context.drawImage(
@@ -133,6 +141,15 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       this.context.closePath();
       this.context.stroke();
     }
+  }
+
+  clearCanvas() {
+    this.context.clearRect(
+      0,
+      0,
+      this.canvas.nativeElement.width,
+      this.canvas.nativeElement.height
+    );
   }
 
   // Draws the background
@@ -348,7 +365,6 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Instantiate our images
-    this.speakerImg.src = IMAGE;
     this.speakerImg.onload = () => {
       this.imageWidth = this.speakerImg.width;
       this.imageHeight = this.speakerImg.height;

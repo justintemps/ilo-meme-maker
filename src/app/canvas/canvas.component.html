@@ -1,6 +1,10 @@
 <div class="row">
   <div class="col">
-    <app-canvas-options [canvas]="canvas"></app-canvas-options>
+    <app-canvas-options
+      (clearCanvasEvent)="clearCanvas()"
+      (addImageEvent)="handleAddImage($event)"
+      [canvas]="canvas"
+    ></app-canvas-options>
   </div>
 </div>
 <div id="" class="quote_card_container">

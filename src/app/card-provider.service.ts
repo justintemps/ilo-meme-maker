@@ -21,27 +21,35 @@ export interface Quote {
   content: string;
 }
 
+const initialBranding = {
+  logo: false,
+  background: false,
+  website: false,
+};
+
+const initialSpeaker = {
+  name: '',
+  title: '',
+};
+
+const initialQuote = {
+  content: '',
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class CardProvider {
   // Holds the branding options
-  private brandingSrc = new BehaviorSubject({
-    logo: false,
-    background: false,
-    website: false,
-  });
+  private brandingSrc = new BehaviorSubject(initialBranding);
   branding: Observable<Branding> = this.brandingSrc.asObservable();
 
   // Holds the speaker info
-  private speakerSrc = new BehaviorSubject({
-    name: '',
-    title: '',
-  });
+  private speakerSrc = new BehaviorSubject(initialSpeaker);
   speaker: Observable<Speaker> = this.speakerSrc.asObservable();
 
   // Holds the quote text
-  private quoteSrc = new BehaviorSubject({ content: '' });
+  private quoteSrc = new BehaviorSubject(initialQuote);
   quote: Observable<Quote> = this.quoteSrc.asObservable();
 
   // Holds the image data
@@ -72,5 +80,12 @@ export class CardProvider {
   updateQuote(update: {}) {
     const quote = this.quoteSrc.getValue();
     this.quoteSrc.next({ ...quote, ...update });
+  }
+
+  // Resets card data
+  initialize() {
+    this.brandingSrc.next(initialBranding);
+    this.speakerSrc.next(initialSpeaker);
+    this.quoteSrc.next(initialQuote);
   }
 }

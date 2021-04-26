@@ -8,6 +8,7 @@
           type="checkbox"
           value="logo"
           id="checkbox_logo"
+          [ngModel]="branding.logo"
           (change)="handleCheckBox($event)"
         />
         <label class="form-check-label" for="checkbox_log">Logo</label>
@@ -19,6 +20,7 @@
           type="checkbox"
           value="background"
           id="checkbox_conf"
+          [ngModel]="branding.background"
           (change)="handleCheckBox($event)"
         />
         <label class="form-check-label" for="checkbox_conf">Background</label>
@@ -30,6 +32,7 @@
           type="checkbox"
           value="website"
           id="checkbox_website"
+          [ngModel]="branding.website"
           (change)="handleCheckBox($event)"
         />
         <label class="form-check-label" for="checkbox_website">Website</label>
@@ -40,31 +43,34 @@
   <div class="mb-3">
     <label class="form-label" for="speaker_name">Speaker Name</label>
     <input
-      (input)="handleUpdateSpeaker($event)"
       name="name"
       type="text"
       id="speaker_name"
       class="form-control"
+      [ngModel]="speaker.name"
+      (input)="handleUpdateSpeaker($event)"
     />
   </div>
 
   <div class="mb-3">
     <label class="form-label" for="speaker_title">Speaker Title</label>
     <input
-      (input)="handleUpdateSpeaker($event)"
       name="title"
       ype="text"
       id="speaker_title"
       class="form-control"
+      [ngModel]="speaker.title"
+      (input)="handleUpdateSpeaker($event)"
     />
   </div>
 
   <div class="mb-3">
     <label class="form-label" for="quote_text">Quote</label>
     <textarea
-      (input)="handleUpdateQuote($event)"
       id="quote_text"
       class="form-control"
+      [ngModel]="quote.content"
+      (input)="handleUpdateQuote($event)"
     ></textarea>
   </div>
 </div>
