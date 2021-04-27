@@ -34,31 +34,34 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('memeCanvas') canvas: ElementRef<HTMLCanvasElement>;
   context: CanvasRenderingContext2D;
 
-  // The images to load into our canvas
+  // Speaker Image Properties
   speakerImg = new Image();
   speakerImgLoaded = false;
-  logoImg = new Image();
+  imageX = 50;
+  imageY = 50;
+  imageWidth: number;
+  imageHeight: number;
 
-  // Values we need for dragging and resizing operations
+  // Values we'll use for dragging and resizing operations on the Speaker Image
   offsetX: number;
   offsetY: number;
   startX: number;
   startY: number;
-  imageX = 50;
-  imageY = 50;
   mouseX: number;
   mouseY: number;
-  imageWidth: number;
-  imageHeight: number;
   imageRight: number;
   imageBottom: number;
   draggingResizer = -1;
   draggingImage = false;
 
+  // Logo image
+  logoImg = new Image();
+
   // Data that comes from the service
   brandingSub: Subscription;
   quoteSub: Subscription;
   speakerSub: Subscription;
+  speakerImgSub: Subscription;
   branding: Branding;
   quote: Quote;
   speaker: Speaker;
@@ -68,24 +71,28 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     private cd: ChangeDetectorRef
   ) {}
 
+  // @TODO: handle window resize handlers to fire this so the coord system won't break
   updateOffsets() {
     const boundingBox = this.canvas.nativeElement.getBoundingClientRect();
     this.offsetX = boundingBox.left;
     this.offsetY = boundingBox.top;
   }
 
+  // Handles addImage events from canvas-options
   handleAddImage(inputEvent: Event) {
     const reader = new FileReader();
     const input = inputEvent.target as HTMLInputElement;
     reader.onload = (readerEvent: Event) => {
       const readerTarget = readerEvent.target as FileReader;
-      this.speakerImg.src = readerTarget.result as string;
+      this.cardProvider.updateSpeakerImg({ src: readerTarget.result });
+      // this.speakerImg.src = readerTarget.result as string;
     };
     if (input.files) {
       reader.readAsDataURL(input.files[0]);
     }
   }
 
+  // Main draw function renders the card with data from the service
   draw(withAnchors: boolean, withBorders: boolean) {
     // clear the canvas
     this.clearCanvas();
@@ -123,6 +130,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     this.drawTitle();
 
     // optionally draw the draggable anchors
+    // but only if a speakerImg has been loaded
     if (withAnchors && this.speakerImgLoaded) {
       this.drawDragAnchor(this.imageX, this.imageY);
       this.drawDragAnchor(this.imageRight, this.imageY);
@@ -275,35 +283,46 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       switch (this.draggingResizer) {
         case 0:
           //top-left
-          this.imageX = this.mouseX;
-          this.imageWidth = this.imageRight - this.mouseX;
-          this.imageY = this.mouseY;
-          this.imageHeight = this.imageBottom - this.mouseY;
+          this.cardProvider.updateSpeakerImg({
+            imageX: this.mouseX,
+            imageWidth: this.imageRight - this.mouseX,
+            imageY: this.mouseY,
+            imageHeight: this.imageBottom - this.mouseY,
+          });
           break;
         case 1:
           //top-right
-          this.imageY = this.mouseY;
-          this.imageWidth = this.mouseX - this.imageX;
-          this.imageHeight = this.imageBottom - this.mouseY;
+          this.cardProvider.updateSpeakerImg({
+            imageY: this.mouseY,
+            imageWidth: this.mouseX - this.imageX,
+            imageHeight: this.imageBottom - this.mouseY,
+          });
           break;
         case 2:
           //bottom-right
-          this.imageWidth = this.mouseX - this.imageX;
-          this.imageHeight = this.mouseY - this.imageY;
+          this.cardProvider.updateSpeakerImg({
+            imageWidth: this.mouseX - this.imageX,
+            imageHeight: this.mouseY - this.imageY,
+          });
           break;
         case 3:
           //bottom-left
-          this.imageX = this.mouseX;
-          this.imageWidth = this.imageRight - this.mouseX;
-          this.imageHeight = this.mouseY - this.imageY;
+          this.cardProvider.updateSpeakerImg({
+            imageX: this.mouseX,
+            imageWidth: this.imageRight - this.mouseX,
+            imageHeight: this.mouseY - this.imageY,
+          });
           break;
       }
 
+      // TODO: We could handle this logic in cardProvider?
       if (this.imageWidth < 25) {
-        this.imageWidth = 25;
+        this.cardProvider.updateSpeakerImg({ imageWidth: 25 });
+        // this.imageWidth = 25;
       }
       if (this.imageHeight < 25) {
-        this.imageHeight = 25;
+        // this.imageHeight = 25;
+        this.cardProvider.updateSpeakerImg({ imageHeight: 25 });
       }
 
       // set the image right and bottom
@@ -319,10 +338,15 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       // move the image by the amount of the latest drag
       let dx = this.mouseX - this.startX;
       let dy = this.mouseY - this.startY;
-      this.imageX += dx;
-      this.imageY += dy;
+
+      this.cardProvider.updateSpeakerImg({
+        imageX: this.imageX + dx,
+        imageY: this.imageY + dy,
+      });
+
       this.imageRight += dx;
       this.imageBottom += dy;
+
       // reset the startXY for next time
       this.startX = this.mouseX;
       this.startY = this.mouseY;
@@ -366,16 +390,18 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     // Instantiate our images
     this.speakerImg.onload = () => {
       this.speakerImgLoaded = true;
-      this.imageWidth = this.speakerImg.width;
-      this.imageHeight = this.speakerImg.height;
+      this.cardProvider.updateSpeakerImg({
+        imageWidth: this.speakerImg.width,
+        imageHeight: this.speakerImg.width,
+      });
+
       this.imageRight = this.imageX + this.imageWidth;
       this.imageBottom = this.imageY + this.imageHeight;
       this.draw(true, false);
     };
-
     this.logoImg.src = LOGO;
 
-    // Set up our subscriptions
+    // Set up branding subscription
     this.brandingSub = this.cardProvider.branding.subscribe((branding) => {
       this.branding = branding;
       if (this.canvas && this.context) {
@@ -383,6 +409,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     });
 
+    // Set up speaker info subscription
     this.speakerSub = this.cardProvider.speaker.subscribe((speaker) => {
       this.speaker = speaker;
       if (this.canvas && this.context) {
@@ -390,17 +417,36 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       }
     });
 
+    // Set up quote subscription
     this.quoteSub = this.cardProvider.quote.subscribe((quote) => {
       this.quote = quote;
       if (this.canvas && this.context) {
         this.draw(false, false);
       }
     });
+
+    // Set up Speaker Image subscription
+    this.speakerImgSub = this.cardProvider.speakerImg.subscribe(
+      ({ src, imageX, imageY, imageWidth, imageHeight }) => {
+        // Only set values if we have an image src
+        if (src) {
+          // Only update the src once otherwise the img will keep rerendering
+          if (!this.speakerImg.src) {
+            this.speakerImg.src = src;
+          }
+          this.imageX = imageX;
+          this.imageY = imageY;
+          this.imageWidth = imageWidth;
+          this.imageHeight = imageHeight;
+        }
+      }
+    );
   }
 
   ngOnDestroy(): void {
     this.brandingSub.unsubscribe();
     this.speakerSub.unsubscribe();
     this.quoteSub.unsubscribe();
+    this.speakerImgSub.unsubscribe();
   }
 }

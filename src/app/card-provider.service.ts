@@ -21,6 +21,16 @@ export interface Quote {
   content: string;
 }
 
+export interface SpeakerImg {
+  src: string | null;
+  width: number;
+  height: number;
+  imageX: number;
+  imageY: number;
+  imageWidth: number;
+  imageHeight: number;
+}
+
 const initialBranding = {
   logo: false,
   background: false,
@@ -52,9 +62,17 @@ export class CardProvider {
   private quoteSrc = new BehaviorSubject(initialQuote);
   quote: Observable<Quote> = this.quoteSrc.asObservable();
 
-  // Holds the image data
-  private profileImgSrc = new BehaviorSubject({ src: '', alt: '' });
-  profileImg: Observable<ProfileImg> = this.profileImgSrc.asObservable();
+  // Holds the speaker image values
+  private speakerImgSrc = new BehaviorSubject({
+    src: null,
+    width: 0,
+    height: 0,
+    imageX: 0,
+    imageY: 0,
+    imageWidth: 0,
+    imageHeight: 0,
+  });
+  speakerImg: Observable<SpeakerImg> = this.speakerImgSrc.asObservable();
 
   constructor() {}
 
@@ -70,16 +88,16 @@ export class CardProvider {
     this.speakerSrc.next({ ...speaker, ...update });
   }
 
-  // Updates the profile image
-  updateProfileImg(update: {}) {
-    const profileImg = this.profileImgSrc.getValue();
-    this.profileImgSrc.next({ ...profileImg, ...update });
-  }
-
   // Updates the quote
   updateQuote(update: {}) {
     const quote = this.quoteSrc.getValue();
     this.quoteSrc.next({ ...quote, ...update });
+  }
+
+  // Updates the speaker image values
+  updateSpeakerImg(update: {}) {
+    const speakerImg = this.speakerImgSrc.getValue();
+    this.speakerImgSrc.next({ ...speakerImg, ...update });
   }
 
   // Resets card data
