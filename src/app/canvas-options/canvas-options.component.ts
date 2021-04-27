@@ -7,6 +7,7 @@ import {
   EventEmitter,
 } from '@angular/core';
 import * as download from 'downloadjs';
+import { StorageProvider } from '../storage-provider.service';
 import { CardProvider } from '../card-provider.service';
 
 @Component({
@@ -25,7 +26,10 @@ export class CanvasOptionsComponent implements OnInit {
   @Output()
   addImageEvent: EventEmitter<Event> = new EventEmitter();
 
-  constructor(private cardService: CardProvider) {}
+  constructor(
+    private cardService: CardProvider,
+    private storageService: StorageProvider
+  ) {}
 
   handleAddImage(event: Event) {
     this.addImageEvent.emit(event);
@@ -39,6 +43,10 @@ export class CanvasOptionsComponent implements OnInit {
   handleDownload() {
     const img = this.canvas.nativeElement.toDataURL('image/png');
     download(img, 'quote_card', 'image/png');
+  }
+
+  handleSave() {
+    this.storageService.saveCard();
   }
 
   ngOnInit(): void {}

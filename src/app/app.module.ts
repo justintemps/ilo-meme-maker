@@ -10,9 +10,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ControlPannelComponent } from './control-pannel/control-pannel.component';
 import { CardProvider } from './card-provider.service';
 import { CanvasOptionsComponent } from './canvas-options/canvas-options.component';
+import { StorageProvider } from './storage-provider.service';
 
 @NgModule({
-  declarations: [AppComponent, CanvasComponent, ControlPannelComponent, CanvasOptionsComponent],
+  declarations: [
+    AppComponent,
+    CanvasComponent,
+    ControlPannelComponent,
+    CanvasOptionsComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -20,7 +26,7 @@ import { CanvasOptionsComponent } from './canvas-options/canvas-options.componen
     BrowserAnimationsModule,
     FormsModule,
   ],
-  providers: [CardProvider],
+  providers: [CardProvider, StorageProvider],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
