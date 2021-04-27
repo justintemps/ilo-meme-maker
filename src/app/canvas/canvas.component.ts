@@ -20,7 +20,6 @@ import {
 } from '../card-provider.service';
 
 // Set up a few constants
-const IMAGE = '/assets/Focus-2015-mar-Ryder.jpg';
 const LOGO = '/assets/ilo-logo-white-en-gb.svg';
 const RESIZER_RADIUS = 3;
 const RR = RESIZER_RADIUS * RESIZER_RADIUS;
@@ -37,6 +36,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
   // The images to load into our canvas
   speakerImg = new Image();
+  speakerImgLoaded = false;
   logoImg = new Image();
 
   // Values we need for dragging and resizing operations
@@ -79,7 +79,6 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     const input = inputEvent.target as HTMLInputElement;
     reader.onload = (readerEvent: Event) => {
       const readerTarget = readerEvent.target as FileReader;
-
       this.speakerImg.src = readerTarget.result as string;
     };
     if (input.files) {
@@ -124,7 +123,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     this.drawTitle();
 
     // optionally draw the draggable anchors
-    if (withAnchors) {
+    if (withAnchors && this.speakerImgLoaded) {
       this.drawDragAnchor(this.imageX, this.imageY);
       this.drawDragAnchor(this.imageRight, this.imageY);
       this.drawDragAnchor(this.imageRight, this.imageBottom);
@@ -366,6 +365,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   ngOnInit(): void {
     // Instantiate our images
     this.speakerImg.onload = () => {
+      this.speakerImgLoaded = true;
       this.imageWidth = this.speakerImg.width;
       this.imageHeight = this.speakerImg.height;
       this.imageRight = this.imageX + this.imageWidth;
