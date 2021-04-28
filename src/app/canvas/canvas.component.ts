@@ -259,6 +259,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   handleMouseDown(e: MouseEvent) {
+    this.updateOffsets();
     this.startX = e.clientX - this.offsetX;
     this.startY = e.clientY - this.offsetY;
     this.draggingResizer = this.anchorHitTest(this.startX, this.startY);
@@ -418,7 +419,6 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       this.speakerImgLoaded = true;
       this.imageRight = this.imageX + this.imageWidth;
       this.imageBottom = this.imageY + this.imageHeight;
-      this.updateOffsets();
       this.draw(true, false);
     };
     this.logoImg.src = LOGO;
