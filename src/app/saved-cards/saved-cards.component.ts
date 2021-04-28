@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Card } from '../card-provider.service';
+import { Card, CardProvider } from '../card-provider.service';
 import { StorageProvider, MaybeCards } from '../storage-provider.service';
 
 @Component({
@@ -9,10 +9,20 @@ import { StorageProvider, MaybeCards } from '../storage-provider.service';
   styleUrls: ['./saved-cards.component.scss'],
 })
 export class SavedCardsComponent implements OnInit, OnDestroy {
-  constructor(private storageService: StorageProvider) {}
+  constructor(
+    private storageService: StorageProvider,
+    private cardService: CardProvider
+  ) {}
 
   cards: MaybeCards;
   cardsSub: Subscription;
+
+  handleCardClick(id: number | null) {
+    if (id && this.cards) {
+      const card = this.cards.find((card) => id === card.id);
+      this.cardService.initialize(card);
+    }
+  }
 
   ngOnInit(): void {
     this.cardsSub = this.storageService.cards.subscribe((cards) => {

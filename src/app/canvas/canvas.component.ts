@@ -430,10 +430,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       ({ src, imageX, imageY, imageWidth, imageHeight }) => {
         // Only set values if we have an image src
         if (src) {
-          // Only update the src once otherwise the img will keep rerendering
-          if (!this.speakerImg.src) {
-            this.speakerImg.src = src;
-          }
+          this.speakerImg.src = src;
           this.imageX = imageX;
           this.imageY = imageY;
           this.imageWidth = imageWidth;

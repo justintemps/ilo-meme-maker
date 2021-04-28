@@ -2,9 +2,13 @@
 <ng-template #elseBlock><h2>No saved cards yet</h2></ng-template>
 <div class="row">
   <div *ngFor="let card of cards" class="col-lg-3">
-    <div class="card">
-      <img src="{{ card.cardImg.src }}" class="card-img-top" alt="..." />
-      <h3>Card title</h3>
+    <div
+      class="card"
+      (click)="handleCardClick(card.id)"
+      style="cursor: pointer"
+    >
+      <img src="{{ card.cardImg.src }}" class="card-img-top" alt="" />
+      <h5>Card title</h5>
     </div>
   </div>
 </div>
