@@ -57,5 +57,10 @@ export class CanvasOptionsComponent implements OnInit {
     this.storageService.saveCard();
   }
 
+  handleNew() {
+    this.cardService.createCard();
+    this.clearCanvasEvent.emit('clearCanvas');
+  }
+
   ngOnInit(): void {}
 }

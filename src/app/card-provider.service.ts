@@ -157,4 +157,10 @@ export class CardProvider {
     this.quoteSrc.next(quote);
     this.speakerImgSrc.next(speakerImg);
   }
+
+  // Creates a new card without an id
+  createCard() {
+    this.id = null;
+    this.initialize();
+  }
 }

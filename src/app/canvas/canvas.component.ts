@@ -435,7 +435,14 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
           this.imageY = imageY;
           this.imageWidth = imageWidth;
           this.imageHeight = imageHeight;
+          return;
         }
+        // Initialize properties if src isn't provided
+        this.speakerImg.src = '';
+        this.imageX = 50;
+        this.imageY = 50;
+        this.imageWidth = 0;
+        this.imageHeight = 0;
       }
     );
   }
