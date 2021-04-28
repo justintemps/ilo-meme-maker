@@ -51,6 +51,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   imageBottom: number;
   draggingResizer = -1;
   draggingImage = false;
+  hoverCanvas = false;
 
   // Logo image
   logoImg = new Image();
@@ -83,7 +84,6 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     reader.onload = (readerEvent: Event) => {
       const readerTarget = readerEvent.target as FileReader;
       this.cardProvider.updateSpeakerImg({ src: readerTarget.result });
-      // this.speakerImg.src = readerTarget.result as string;
     };
     if (input.files) {
       reader.readAsDataURL(input.files[0]);
@@ -128,8 +128,9 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     this.drawTitle();
 
     // optionally draw the draggable anchors
-    // but only if a speakerImg has been loaded
-    if (withAnchors && this.speakerImgLoaded) {
+    // but only if a speakerImg has been loaded and the mouse
+    // is over the canvas
+    if (withAnchors && this.speakerImgLoaded && this.hoverCanvas) {
       this.drawDragAnchor(this.imageX, this.imageY);
       this.drawDragAnchor(this.imageRight, this.imageY);
       this.drawDragAnchor(this.imageRight, this.imageBottom);
@@ -139,6 +140,9 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     // optionally draw the connecting anchor lines
     if (withBorders) {
       this.context.beginPath();
+      this.context.setLineDash([18, 5]);
+      this.context.lineWidth = 3;
+      this.context.strokeStyle = '#fa3c4b';
       this.context.moveTo(this.imageX, this.imageY);
       this.context.lineTo(this.imageRight, this.imageY);
       this.context.lineTo(this.imageRight, this.imageBottom);
@@ -220,25 +224,25 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     // top-left
     dx = x - this.imageX;
     dy = y - this.imageY;
-    if (dx * dx + dy * dy <= RR) {
+    if (dx * dx + dy * dy <= RR * 2) {
       return 0;
     }
     // top-right
     dx = x - this.imageRight;
     dy = y - this.imageY;
-    if (dx * dx + dy * dy <= RR) {
+    if (dx * dx + dy * dy <= RR * 2) {
       return 1;
     }
     // bottom-right
     dx = x - this.imageRight;
     dy = y - this.imageBottom;
-    if (dx * dx + dy * dy <= RR) {
+    if (dx * dx + dy * dy <= RR * 2) {
       return 2;
     }
     // bottom-left
     dx = x - this.imageX;
     dy = y - this.imageBottom;
-    if (dx * dx + dy * dy <= RR) {
+    if (dx * dx + dy * dy <= RR * 2) {
       return 3;
     }
     return -1;
@@ -268,7 +272,13 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     this.draw(true, false);
   }
 
+  handleMouseEnter() {
+    this.hoverCanvas = true;
+    this.draw(true, false);
+  }
+
   handleMouseOut() {
+    this.hoverCanvas = false;
     this.handleMouseUp();
   }
 
@@ -348,7 +358,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       this.startY = this.mouseY;
 
       // redraw the image with border
-      this.draw(false, true);
+      this.draw(false, false);
     }
   }
 
@@ -376,6 +386,10 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       this.handleMouseUp();
     });
 
+    this.canvas.nativeElement.addEventListener('mouseenter', (e) => {
+      this.handleMouseEnter();
+    });
+
     this.canvas.nativeElement.addEventListener('mouseout', (e) => {
       this.handleMouseOut();
     });
@@ -389,14 +403,22 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   ngOnInit(): void {
     // Instantiate our images
     this.speakerImg.onload = () => {
+      // If the card doesn't have an id then it hasn't been saved and the user
+      // hasn't been able to make any modifications do it. In that case, get the
+      // width and height from the image itself. Do the same thing if we know the
+      // canvas is blank because it's already been cleared by a use
+      const cardIsNew = !this.cardProvider.id;
+      const canvasIsBlank = this.cardProvider.getCard().speakerImg.src;
+      if (cardIsNew || canvasIsBlank) {
+        this.cardProvider.updateSpeakerImg({
+          imageWidth: this.speakerImg.width,
+          imageHeight: this.speakerImg.height,
+        });
+      }
       this.speakerImgLoaded = true;
-      this.cardProvider.updateSpeakerImg({
-        imageWidth: this.speakerImg.width,
-        imageHeight: this.speakerImg.height,
-      });
-
       this.imageRight = this.imageX + this.imageWidth;
       this.imageBottom = this.imageY + this.imageHeight;
+      this.updateOffsets();
       this.draw(true, false);
     };
     this.logoImg.src = LOGO;
@@ -428,8 +450,8 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     // Set up Speaker Image subscription
     this.speakerImgSub = this.cardProvider.speakerImg.subscribe(
       ({ src, imageX, imageY, imageWidth, imageHeight }) => {
-        // Do an equality check on our src to see if it needs to be updated
-        // If it doesn't, then don't update it or we'll cause an infinite loop.
+        // If we have an src that's different from the last one
+        // then set it, otherwise don't or we get an infinite loop
         if (src && this.speakerImg.src !== src) {
           this.speakerImg.src = src;
         }
@@ -444,6 +466,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
         }
 
         // If we don't have an src, initialize values
+        this.speakerImgLoaded = false;
         this.speakerImg.src = '';
         this.imageX = 50;
         this.imageY = 50;

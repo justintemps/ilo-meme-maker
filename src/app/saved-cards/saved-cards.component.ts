@@ -33,7 +33,6 @@ export class SavedCardsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.cardsSub = this.storageService.cards.subscribe((cards) => {
       this.cards = cards;
-      console.log(this.cards);
     });
   }
 
