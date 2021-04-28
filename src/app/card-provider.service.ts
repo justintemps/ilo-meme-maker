@@ -1,10 +1,22 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+// export interface Branding {
+//   color: 'blue' | 'white' | null;
+// }
+
+export interface Background {
+  color: 'blue' | 'white' | null;
+}
+
+export interface Font {
+  color: 'blue' | 'white';
+}
+
+/* We can eventually get rid of this */
 export interface Branding {
   logo: boolean;
   background: boolean;
-  website: boolean;
 }
 
 export interface Speaker {
