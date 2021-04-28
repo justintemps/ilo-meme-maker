@@ -1,5 +1,3 @@
-//@TODO handle window and canvas resize
-
 import {
   Component,
   AfterViewInit,
@@ -278,7 +276,6 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     if (this.draggingResizer > -1) {
       this.mouseX = e.clientX - this.offsetX;
       this.mouseY = e.clientY - this.offsetY;
-
       // resize the image
       switch (this.draggingResizer) {
         case 0:
@@ -315,7 +312,6 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
           break;
       }
 
-      // TODO: We could handle this logic in cardProvider?
       if (this.imageWidth < 25) {
         this.cardProvider.updateSpeakerImg({ imageWidth: 25 });
         // this.imageWidth = 25;
@@ -386,13 +382,15 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     this.cd.detectChanges();
   }
 
+  count = 0;
+
   ngOnInit(): void {
     // Instantiate our images
     this.speakerImg.onload = () => {
       this.speakerImgLoaded = true;
       this.cardProvider.updateSpeakerImg({
         imageWidth: this.speakerImg.width,
-        imageHeight: this.speakerImg.width,
+        imageHeight: this.speakerImg.height,
       });
 
       this.imageRight = this.imageX + this.imageWidth;
@@ -428,16 +426,22 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     // Set up Speaker Image subscription
     this.speakerImgSub = this.cardProvider.speakerImg.subscribe(
       ({ src, imageX, imageY, imageWidth, imageHeight }) => {
-        // Only set values if we have an image src
-        if (src) {
+        // Do an equality check on our src to see if it needs to be updated
+        // If it doesn't, then don't update it or we'll cause an infinite loop.
+        if (src && this.speakerImg.src !== src) {
           this.speakerImg.src = src;
+        }
+
+        // If we have an src, set values on the image
+        if (src) {
           this.imageX = imageX;
           this.imageY = imageY;
           this.imageWidth = imageWidth;
           this.imageHeight = imageHeight;
           return;
         }
-        // Initialize properties if src isn't provided
+
+        // If we don't have an src, initialize values
         this.speakerImg.src = '';
         this.imageX = 50;
         this.imageY = 50;

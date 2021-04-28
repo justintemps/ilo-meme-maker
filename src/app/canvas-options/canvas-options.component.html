@@ -1,21 +1,33 @@
 <div class="btn-group btn-group-sm">
   <label for="addImage">
-    <span class="btn btn-primary"
+    <span
+      [className]="canvasHasImage ? 'btn btn-info disabled' : 'btn btn-info'"
       >Upload Image
       <input
         id="addImage"
         type="file"
         value="Upload Image"
         (change)="handleAddImage($event)"
+        [attr.disabled]="canvasHasImage ? '' : null"
       />
     </span>
   </label>
   <button (click)="handleClearCanvas()" class="btn btn-danger">
     Clear Canvas
   </button>
-  <button (click)="handleDownload()" class="btn btn-success">
-    Download Card
+  <button (click)="handleDownload()" class="btn btn-info">Download Card</button>
+  <button
+    (click)="handleSave()"
+    [attr.disabled]="cardHasReqFields ? null : ''"
+    class="btn btn-info"
+  >
+    Save Card
   </button>
-  <button (click)="handleSave()" class="btn btn-info">Save Card</button>
-  <button (click)="handleNew()" class="btn btn-primary">New Card</button>
+  <button
+    (click)="handleNew()"
+    [attr.disabled]="cardHasID ? null : ''"
+    class="btn btn-info"
+  >
+    New Card
+  </button>
 </div>
