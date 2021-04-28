@@ -29,7 +29,7 @@ export class StorageProvider {
   }
 
   // Adds a collection of cards to local storage and syncs the model we have in memory
-  updateCache(cards: Card[]): void {
+  updateCards(cards: Card[]): void {
     window.localStorage.setItem('cards', JSON.stringify(cards));
     this.getCachedCards();
   }
@@ -45,7 +45,7 @@ export class StorageProvider {
       card.id = 1;
       // Update the current card with its new id
       this.cardService.initialize(card);
-      this.updateCache([card]);
+      this.updateCards([card]);
       return;
     }
 
@@ -61,13 +61,22 @@ export class StorageProvider {
       // Update the current card with its new id
       this.cardService.initialize(card);
       cards.push(card);
-      this.updateCache(cards);
+      this.updateCards(cards);
       return;
     }
 
-    // If we're updating a card then, then find and update
+    // If we're updating a card then find and update
     const cardIndex = cards.findIndex(({ id }) => id === card.id);
     cards[cardIndex] = card;
-    this.updateCache(cards);
+    this.updateCards(cards);
+  }
+
+  // Delete a card
+  deleteCard(id: number) {
+    const cards = this.cardsSrc.getValue();
+    if (cards) {
+      const newCards = cards.filter((card) => card.id !== id);
+      this.updateCards(newCards);
+    }
   }
 }

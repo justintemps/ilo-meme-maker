@@ -24,6 +24,12 @@ export class SavedCardsComponent implements OnInit, OnDestroy {
     }
   }
 
+  handleDeleteCard(id: number | null) {
+    if (id) {
+      this.storageService.deleteCard(id);
+    }
+  }
+
   ngOnInit(): void {
     this.cardsSub = this.storageService.cards.subscribe((cards) => {
       this.cards = cards;

@@ -8,7 +8,10 @@
       style="cursor: pointer"
     >
       <img src="{{ card.cardImg.src }}" class="card-img-top" alt="" />
-      <h5>Card title</h5>
+      <h5>{{ card.speaker.name }}</h5>
+      <button (click)="handleDeleteCard(card.id)" class="btn btn-danger">
+        Delete
+      </button>
     </div>
   </div>
 </div>
