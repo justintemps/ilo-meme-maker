@@ -65,6 +65,27 @@ h1 {
   }
 }
 
+h2 {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  border-bottom: 2px solid var(--ilo-red);
+  &:before {
+    padding: 0 0.4rem 0 0;
+    @include triangle(right, var(--ilo-red), 0.8rem);
+  }
+}
+
+h5.decorated {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  &:before {
+    padding: 0 0.4rem 0 0;
+    @include triangle(right, var(--ilo-red), 0.6rem);
+  }
+}
+
 p,
 div,
 span,

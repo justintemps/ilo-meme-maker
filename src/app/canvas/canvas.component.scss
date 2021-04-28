@@ -4,9 +4,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--ilo-grey);
+  background: var(--ilo-dark-blue);
 }
 
 canvas {
   background-color: var(--ilo-white);
+  border: 2px solid var(--ilo-red);
 }

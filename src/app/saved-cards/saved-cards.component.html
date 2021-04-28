@@ -1,17 +1,26 @@
-<h2 *ngIf="cards && cards.length > 0; else elseBlock">Saved cards</h2>
-<ng-template #elseBlock><h2>No saved cards yet</h2></ng-template>
-<div class="row mb-5">
-  <div *ngFor="let card of cards?.slice()?.reverse()" class="col-lg-3">
-    <div
-      class="card"
-      (click)="handleCardClick(card.id)"
-      style="cursor: pointer"
-    >
-      <img src="{{ card.cardImg.src }}" class="card-img-top" alt="" />
-      <h5>{{ card.speaker.name }}</h5>
-      <button (click)="handleDeleteCard(card.id)" class="btn btn-danger">
-        Delete
-      </button>
+<div class="mt-4 mb-5">
+  <h2 class="pb-3" *ngIf="cards && cards.length > 0; else elseBlock">
+    Saved cards
+  </h2>
+  <ng-template #elseBlock><h2 class="pb-3">No saved cards yet</h2></ng-template>
+  <div class="row mt-5">
+    <div *ngFor="let card of cards?.slice()?.reverse()" class="col-lg-3">
+      <div
+        class="card"
+        (click)="handleCardClick(card.id)"
+        style="cursor: pointer"
+      >
+        <img src="{{ card.cardImg.src }}" class="card-img-top" alt="" />
+        <div class="card-body">
+          <h5 class="card-title">{{ card.speaker.name }}</h5>
+          <p *ngIf="card.speaker.title && card.speaker.title.length > 0">
+            {{ card.speaker.title }}
+          </p>
+          <button (click)="handleDeleteCard(card.id)" class="btn btn-danger">
+            Delete
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
