@@ -1,33 +1,57 @@
-<div class="btn-group btn-group-sm">
-  <label for="addImage">
-    <span
-      [className]="canvasHasImage ? 'btn btn-info disabled' : 'btn btn-info'"
-      >Upload Image
-      <input
-        id="addImage"
-        type="file"
-        value="Upload Image"
-        (change)="handleAddImage($event)"
-        [attr.disabled]="canvasHasImage ? '' : null"
-      />
-    </span>
-  </label>
-  <button (click)="handleClearCanvas()" class="btn btn-danger">
-    Clear Canvas
-  </button>
-  <button (click)="handleDownload()" class="btn btn-info">Download Card</button>
-  <button
-    (click)="handleSave()"
-    [attr.disabled]="cardHasReqFields ? null : ''"
-    class="btn btn-info"
-  >
-    Save Card
-  </button>
-  <button
-    (click)="handleNew()"
-    [attr.disabled]="cardHasID ? null : ''"
-    class="btn btn-info"
-  >
-    New Card
-  </button>
+<div class="btn-toolbar d-flex justify-content-between" role="toolbar">
+  <div class="btn-group" role="group">
+    <label for="addImage">
+      <span
+        [className]="
+          canvasHasImage ? 'btn btn-primary disabled' : 'btn btn-primary'
+        "
+      >
+        <i class="fas fa-upload"></i>
+        Add Image
+        <input
+          id="addImage"
+          type="file"
+          value="Upload Image"
+          (change)="handleAddImage($event)"
+          [attr.disabled]="canvasHasImage ? '' : null"
+        />
+      </span>
+    </label>
+    <button
+      (click)="handleClearCanvas()"
+      type="button"
+      class="btn btn-danger"
+      [attr.disabled]="canvasHasImage ? null : ''"
+    >
+      <i class="fas fa-eraser"></i>
+      Clear Canvas
+    </button>
+  </div>
+
+  <div class="btn-group me-2" role="group">
+    <button
+      (click)="handleDownload()"
+      class="btn btn-info"
+      [attr.disabled]="canvasHasImage ? null : ''"
+    >
+      <i class="fas fa-download"></i>
+      Download Card
+    </button>
+    <button
+      (click)="handleSave()"
+      [attr.disabled]="cardHasReqFields ? null : ''"
+      class="btn btn-info"
+    >
+      <i class="fas fa-save"></i>
+      Save Card
+    </button>
+    <button
+      (click)="handleNew()"
+      [attr.disabled]="cardHasID ? null : ''"
+      class="btn btn-info"
+    >
+      <i class="fas fa-plus-square"></i>
+      New Card
+    </button>
+  </div>
 </div>

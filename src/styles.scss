@@ -4,9 +4,8 @@
 @import "~@fortawesome/fontawesome-free/scss/solid.scss";
 @import "~@fortawesome/fontawesome-free/scss/regular.scss";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
-
-// Bring in mdb styles
 @import "~mdb-angular-ui-kit/assets/scss/mdb.scss";
+@import "./utils"; // Bring in mdb styles
 
 // Colors
 :root {
@@ -52,6 +51,18 @@ h5 {
   font-family: "Overpass", sans-serif;
   color: var(--ilo-dark-blue);
   font-weight: 700;
+}
+
+h1 {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 0 0 1rem;
+  border-bottom: 2px solid var(--ilo-red);
+  &:before {
+    padding: 0 0.5rem 0 0;
+    @include triangle(right, var(--ilo-red), 1rem);
+  }
 }
 
 p,
