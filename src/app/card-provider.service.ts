@@ -1,22 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-// export interface Branding {
-//   color: 'blue' | 'white' | null;
-// }
-
-export interface Background {
-  color: 'blue' | 'white' | null;
-}
-
-export interface Font {
-  color: 'blue' | 'white';
-}
-
-/* We can eventually get rid of this */
 export interface Branding {
-  logo: boolean;
-  background: boolean;
+  logo: 'blue' | 'white' | null;
+  background: 'blue' | 'white' | 'red' | null;
+  font: 'blue' | 'white' | 'red';
 }
 
 export interface Speaker {
@@ -51,10 +39,10 @@ export interface Card {
   cardImg: CardImg;
 }
 
-const initialBranding = {
-  logo: false,
-  background: false,
-  website: false,
+const initialBranding: Branding = {
+  logo: null,
+  background: null,
+  font: 'blue',
 };
 
 const initialSpeaker = {
@@ -90,6 +78,8 @@ export class CardProvider {
   // Holds the branding options
   private brandingSrc = new BehaviorSubject<Branding>(initialBranding);
   public branding = this.brandingSrc.asObservable();
+
+  //
 
   // Holds the speaker info
   private speakerSrc = new BehaviorSubject<Speaker>(initialSpeaker);

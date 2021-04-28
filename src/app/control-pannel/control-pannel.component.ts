@@ -23,17 +23,13 @@ export class ControlPannelComponent implements OnInit, OnDestroy {
 
   constructor(private cardProvider: CardProvider) {}
 
-  handleCheckBox(event: Event) {
-    // Cast the target as an Input
+  handleRadiobutton(event: Event, type: string) {
     const element = event.currentTarget as HTMLInputElement;
-    // Get the branding option from the input value
-    const option = element.value;
-    // See if the input is checked
+    const value = element.value === 'hidden' ? null : element.value;
     const checked = element.checked;
-    // Update the branding property
-    return this.cardProvider.updateBranding({
-      [option]: checked,
-    });
+    if (checked) {
+      this.cardProvider.updateBranding({ [type]: value });
+    }
   }
 
   handleUpdateSpeaker(event: Event) {

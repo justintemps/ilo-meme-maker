@@ -1,6 +1,6 @@
 <h2 *ngIf="cards && cards.length > 0; else elseBlock">Saved cards</h2>
 <ng-template #elseBlock><h2>No saved cards yet</h2></ng-template>
-<div class="row">
+<div class="row mb-5">
   <div *ngFor="let card of cards?.slice()?.reverse()" class="col-lg-3">
     <div
       class="card"

@@ -18,9 +18,19 @@ import {
 } from '../card-provider.service';
 
 // Set up a few constants
-const LOGO = '/assets/ilo-logo-white-en-gb.svg';
 const RESIZER_RADIUS = 3;
 const RR = RESIZER_RADIUS * RESIZER_RADIUS;
+
+const COLOR = {
+  blue: '#1e2dbe',
+  white: '#fff',
+  red: '#fa3c4b',
+};
+
+const LOGO = {
+  blue: '/assets/blue_logo.png',
+  white: '/assets/white_logo.png',
+};
 
 @Component({
   selector: 'app-canvas',
@@ -53,8 +63,11 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
   draggingImage = false;
   hoverCanvas = false;
 
-  // Logo image
-  logoImg = new Image();
+  // Logos image
+  logo = {
+    white: new Image(),
+    blue: new Image(),
+  };
 
   // Data that comes from the service
   brandingSub: Subscription;
@@ -163,19 +176,21 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
   // Draws the background
   drawBackground() {
-    this.context.beginPath();
-    this.context.moveTo(0, 0);
-    this.context.lineTo(0, 335);
-    this.context.lineTo(430, 335);
-    this.context.lineTo(280, 0);
-    this.context.closePath();
-    this.context.fillStyle = '#1e2dbe';
-    this.context.fill();
+    if (this.branding.background) {
+      this.context.beginPath();
+      this.context.moveTo(0, 0);
+      this.context.lineTo(0, 335);
+      this.context.lineTo(430, 335);
+      this.context.lineTo(280, 0);
+      this.context.closePath();
+      this.context.fillStyle = COLOR[this.branding.background];
+      this.context.fill();
+    }
   }
 
   // Draws the quote
   drawQuote() {
-    this.context.fillStyle = '#fff';
+    this.context.fillStyle = COLOR[this.branding.font];
     CanvasTextWrapper(this.canvas.nativeElement, this.quote.content, {
       offsetY: 100,
       offsetX: 50,
@@ -185,7 +200,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
   // Draws the speaker
   drawSpeaker() {
-    this.context.fillStyle = '#fff';
+    this.context.fillStyle = COLOR[this.branding.font];
     CanvasTextWrapper(this.canvas.nativeElement, this.speaker.name, {
       offsetY: 260,
       offsetX: 50,
@@ -195,7 +210,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
   // Draws the title
   drawTitle() {
-    this.context.fillStyle = '#fff';
+    this.context.fillStyle = COLOR[this.branding.font];
     CanvasTextWrapper(this.canvas.nativeElement, this.speaker.title, {
       offsetY: 280,
       offsetX: 50,
@@ -205,7 +220,9 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
 
   // Draws the logo
   drawLogo() {
-    this.context.drawImage(this.logoImg, 10, 10, 114, 46);
+    if (this.branding.logo) {
+      this.context.drawImage(this.logo[this.branding.logo], 10, 10, 114, 46);
+    }
   }
 
   // Draws anchors for resizing
@@ -421,7 +438,10 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       this.imageBottom = this.imageY + this.imageHeight;
       this.draw(true, false);
     };
-    this.logoImg.src = LOGO;
+
+    // Initialize logos
+    this.logo.white.src = LOGO.white;
+    this.logo.blue.src = LOGO.blue;
 
     // Set up branding subscription
     this.brandingSub = this.cardProvider.branding.subscribe((branding) => {

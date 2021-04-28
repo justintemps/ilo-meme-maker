@@ -17,12 +17,7 @@
         />
       </span>
     </label>
-    <button
-      (click)="handleClearCanvas()"
-      type="button"
-      class="btn btn-danger"
-      [attr.disabled]="canvasHasImage ? null : ''"
-    >
+    <button (click)="handleClearCanvas()" type="button" class="btn btn-danger">
       <i class="fas fa-eraser"></i>
       Clear Canvas
     </button>

@@ -1,6 +1,6 @@
 <div class="container-fluid pb-3 pt-3 pe-3 ps-3">
   <div class="row mb-3 ms-0 me-0 gx-0">
-    <div class="col-12 fw-bold mb-1">Branding</div>
+    <div class="col-12 fw-bold mb-1">Logo</div>
 
     <div
       class="btn-group btn-group-sm mb-3"
@@ -8,30 +8,38 @@
       aria-label="Basic radio toggle button group"
     >
       <input
+        (change)="handleRadiobutton($event, 'logo')"
+        value="hidden"
         type="radio"
         class="btn-check"
         name="branding_buttons"
         id="branding_hidden"
         autocomplete="off"
-        checked
+        [checked]="branding.logo === null"
       />
       <label class="btn btn-outline-primary" for="branding_hidden"
         >Hidden</label
       >
       <input
+        (change)="handleRadiobutton($event, 'logo')"
+        value="blue"
         type="radio"
         class="btn-check"
         name="branding_buttons"
         id="branding_blue"
         autocomplete="off"
+        [checked]="branding.logo === 'blue'"
       />
       <label class="btn btn-outline-primary" for="branding_blue">Blue</label>
       <input
+        (change)="handleRadiobutton($event, 'logo')"
+        value="white"
         type="radio"
         class="btn-check"
         name="branding_buttons"
         id="branding_white"
         autocomplete="off"
+        [checked]="branding.logo === 'white'"
       />
       <label class="btn btn-outline-primary" for="branding_white">White</label>
     </div>
@@ -43,35 +51,54 @@
       aria-label="Basic radio toggle button group"
     >
       <input
+        (change)="handleRadiobutton($event, 'background')"
+        value="hidden"
         type="radio"
         class="btn-check"
         name="background_buttons"
         id="background_hidden"
         autocomplete="off"
-        checked
+        [checked]="branding.background === null"
       />
       <label class="btn btn-outline-primary" for="background_hidden"
         >Hidden</label
       >
 
       <input
+        (change)="handleRadiobutton($event, 'background')"
+        value="blue"
         type="radio"
         class="btn-check"
         name="background_buttons"
         id="background_blue"
         autocomplete="off"
+        [checked]="branding.background === 'blue'"
       />
       <label class="btn btn-outline-primary" for="background_blue">Blue</label>
       <input
+        (change)="handleRadiobutton($event, 'background')"
+        value="white"
         type="radio"
         class="btn-check"
         name="background_buttons"
         id="background_white"
         autocomplete="off"
+        [checked]="branding.background === 'white'"
       />
       <label class="btn btn-outline-primary" for="background_white"
         >White</label
       >
+      <input
+        (change)="handleRadiobutton($event, 'background')"
+        value="red"
+        type="radio"
+        class="btn-check"
+        name="background_buttons"
+        id="background_red"
+        autocomplete="off"
+        [checked]="branding.background === 'red'"
+      />
+      <label class="btn btn-outline-primary" for="background_red">Red</label>
     </div>
 
     <div class="col-12 fw-bold mb-1">Font Color</div>
@@ -81,87 +108,73 @@
       aria-label="Basic radio toggle button group"
     >
       <input
+        (change)="handleRadiobutton($event, 'font')"
+        value="blue"
         type="radio"
         class="btn-check"
         name="font_color_buttons"
         id="font_blue"
         autocomplete="off"
-        checked
+        [checked]="branding.font === 'blue'"
       />
-      <label class="btn btn-outline-primary" for="background_blue">Blue</label>
+      <label class="btn btn-outline-primary" for="font_blue">Blue</label>
       <input
+        (change)="handleRadiobutton($event, 'font')"
+        value="white"
         type="radio"
         class="btn-check"
         name="font_color_buttons"
         id="font_white"
         autocomplete="off"
+        [checked]="branding.font === 'white'"
       />
-      <label class="btn btn-outline-primary" for="background_white"
-        >White</label
-      >
+      <label class="btn btn-outline-primary" for="font_white">White</label>
+      <input
+        (change)="handleRadiobutton($event, 'font')"
+        value="red"
+        type="radio"
+        class="btn-check"
+        name="font_color_buttons"
+        id="font_red"
+        autocomplete="off"
+        [checked]="branding.font === 'red'"
+      />
+      <label class="btn btn-outline-primary" for="font_red">Red</label>
     </div>
 
-    <!-- The shit we have to replace is below here-->
-
-    <div class="row d-flex justify-content-between ps-1 pe-1 mb-3 gx-0">
-      <div class="col-auto form-check">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          value="logo"
-          id="checkbox_logo"
-          [ngModel]="branding.logo"
-          (change)="handleCheckBox($event)"
-        />
-        <label class="form-check-label" for="checkbox_log">Logo</label>
-      </div>
-
-      <div class="col-auto form-check">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          value="background"
-          id="checkbox_conf"
-          [ngModel]="branding.background"
-          (change)="handleCheckBox($event)"
-        />
-        <label class="form-check-label" for="checkbox_conf">Background</label>
-      </div>
+    <div class="mb-3">
+      <label class="form-label" for="speaker_name">Speaker Name*</label>
+      <input
+        name="name"
+        type="text"
+        id="speaker_name"
+        class="form-control"
+        [ngModel]="speaker.name"
+        (input)="handleUpdateSpeaker($event)"
+      />
     </div>
-  </div>
 
-  <div class="mb-3">
-    <label class="form-label" for="speaker_name">Speaker Name*</label>
-    <input
-      name="name"
-      type="text"
-      id="speaker_name"
-      class="form-control"
-      [ngModel]="speaker.name"
-      (input)="handleUpdateSpeaker($event)"
-    />
-  </div>
+    <div class="mb-3">
+      <label class="form-label" for="speaker_title">Speaker Title</label>
+      <input
+        name="title"
+        ype="text"
+        id="speaker_title"
+        class="form-control"
+        [ngModel]="speaker.title"
+        (input)="handleUpdateSpeaker($event)"
+      />
+    </div>
 
-  <div class="mb-3">
-    <label class="form-label" for="speaker_title">Speaker Title</label>
-    <input
-      name="title"
-      ype="text"
-      id="speaker_title"
-      class="form-control"
-      [ngModel]="speaker.title"
-      (input)="handleUpdateSpeaker($event)"
-    />
+    <div class="mb-3">
+      <label class="form-label" for="quote_text">Quote</label>
+      <textarea
+        id="quote_text"
+        class="form-control"
+        [ngModel]="quote.content"
+        (input)="handleUpdateQuote($event)"
+      ></textarea>
+    </div>
+    <p class="text-danger">*Required to save image</p>
   </div>
-
-  <div class="mb-3">
-    <label class="form-label" for="quote_text">Quote</label>
-    <textarea
-      id="quote_text"
-      class="form-control"
-      [ngModel]="quote.content"
-      (input)="handleUpdateQuote($event)"
-    ></textarea>
-  </div>
-  <p class="text-danger">*Required to save image</p>
 </div>
