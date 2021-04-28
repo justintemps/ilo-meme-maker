@@ -73,27 +73,27 @@ const initialCardImg = {
 })
 export class CardProvider {
   // Holds the cards id. A new card only gets an id once it's been saved
-  id: number | null = null;
+  public id: number | null = null;
 
   // Holds the branding options
   private brandingSrc = new BehaviorSubject<Branding>(initialBranding);
-  branding = this.brandingSrc.asObservable();
+  public branding = this.brandingSrc.asObservable();
 
   // Holds the speaker info
   private speakerSrc = new BehaviorSubject<Speaker>(initialSpeaker);
-  speaker = this.speakerSrc.asObservable();
+  public speaker = this.speakerSrc.asObservable();
 
   // Holds the quote text
   private quoteSrc = new BehaviorSubject<Quote>(initialQuote);
-  quote = this.quoteSrc.asObservable();
+  public quote = this.quoteSrc.asObservable();
 
   // Holds the speaker image values
   private speakerImgSrc = new BehaviorSubject<SpeakerImg>(initialSpeakerImg);
-  speakerImg = this.speakerImgSrc.asObservable();
+  public speakerImg = this.speakerImgSrc.asObservable();
 
   // Holds the saved value of the card image
   private cardImgSrc = new BehaviorSubject<CardImg>(initialCardImg);
-  cardImg = this.cardImgSrc.asObservable();
+  public cardImg = this.cardImgSrc.asObservable();
 
   constructor() {}
 
@@ -146,8 +146,7 @@ export class CardProvider {
     const speaker = card?.speaker ?? initialSpeaker;
     const quote = card?.quote ?? initialQuote;
     const speakerImg = card?.speakerImg ?? initialSpeakerImg;
-    // If no id property, assume this is a new card and then
-    // it doesn't have one
+    // If no id property, assume this is a new card
     if (id) {
       this.id = id;
     }

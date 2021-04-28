@@ -54,7 +54,6 @@ export class CanvasOptionsComponent implements OnInit, OnDestroy {
   }
 
   handleClearCanvas() {
-    this.cardService.initialize();
     this.clearCanvasEvent.emit('clearCanvas');
   }
 

@@ -78,5 +78,10 @@ export class StorageProvider {
       const newCards = cards.filter((card) => card.id !== id);
       this.updateCards(newCards);
     }
+    // If we just deleted the card we're looking at, remove it's ID
+    // so it will get saved as a new card if the user saves again
+    if (id === this.cardService.id) {
+      this.cardService.id = null;
+    }
   }
 }
