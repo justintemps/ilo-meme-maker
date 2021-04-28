@@ -69,12 +69,12 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     private cd: ChangeDetectorRef
   ) {}
 
-  // @TODO: handle window resize handlers to fire this so the coord system won't break
-  updateOffsets() {
+  // This is an event handler on window, arrow function prevents change of scope
+  updateOffsets = () => {
     const boundingBox = this.canvas.nativeElement.getBoundingClientRect();
     this.offsetX = boundingBox.left;
     this.offsetY = boundingBox.top;
-  }
+  };
 
   // Handles addImage events from canvas-options
   handleAddImage(inputEvent: Event) {
@@ -358,7 +358,11 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       '2d'
     ) as CanvasRenderingContext2D;
 
+    // Make sure changes to the size of the window
+    // or canvas don't throw off our coord system
     this.updateOffsets();
+    window.addEventListener('resize', this.updateOffsets);
+    this.canvas.nativeElement.addEventListener('resize', this.updateOffsets);
 
     this.canvas.nativeElement.addEventListener('mousedown', (e) => {
       this.handleMouseDown(e);
@@ -381,8 +385,6 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
     // https://angular.io/errors/NG0100
     this.cd.detectChanges();
   }
-
-  count = 0;
 
   ngOnInit(): void {
     // Instantiate our images
