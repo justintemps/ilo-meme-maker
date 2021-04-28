@@ -26,12 +26,17 @@ export interface SpeakerImg {
   imageHeight: number;
 }
 
+export interface CardImg {
+  src: string | null;
+}
+
 export interface Card {
   id: number | null;
   branding: Branding;
   speaker: Speaker;
   quote: Quote;
   speakerImg: SpeakerImg;
+  cardImg: CardImg;
 }
 
 const initialBranding = {
@@ -59,6 +64,10 @@ const initialSpeakerImg = {
   imageHeight: 0,
 };
 
+const initialCardImg = {
+  src: null,
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -81,6 +90,10 @@ export class CardProvider {
   // Holds the speaker image values
   private speakerImgSrc = new BehaviorSubject<SpeakerImg>(initialSpeakerImg);
   speakerImg = this.speakerImgSrc.asObservable();
+
+  // Holds the saved value of the card image
+  private cardImgSrc = new BehaviorSubject<CardImg>(initialCardImg);
+  cardImg = this.cardImgSrc.asObservable();
 
   constructor() {}
 
@@ -108,6 +121,12 @@ export class CardProvider {
     this.speakerImgSrc.next({ ...speakerImg, ...update });
   }
 
+  // Updates the card image
+  updateCardImg(update: {}) {
+    const cardImg = this.cardImgSrc.getValue();
+    this.cardImgSrc.next({ ...cardImg, ...update });
+  }
+
   // Returns all the properties of the current card
   getCard(): Card {
     return {
@@ -116,6 +135,7 @@ export class CardProvider {
       speaker: this.speakerSrc.getValue(),
       quote: this.quoteSrc.getValue(),
       speakerImg: this.speakerImgSrc.getValue(),
+      cardImg: this.cardImgSrc.getValue(),
     };
   }
 

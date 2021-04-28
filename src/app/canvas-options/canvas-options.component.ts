@@ -40,12 +40,20 @@ export class CanvasOptionsComponent implements OnInit {
     this.clearCanvasEvent.emit('clearCanvas');
   }
 
-  handleDownload() {
+  // Returns the canvas as a base64 string which can be rendered as an image
+  snapshot(): string {
     const img = this.canvas.nativeElement.toDataURL('image/png');
+    return img;
+  }
+
+  handleDownload() {
+    const img = this.snapshot();
     download(img, 'quote_card', 'image/png');
   }
 
   handleSave() {
+    const img = this.snapshot();
+    this.cardService.updateCardImg({ src: img });
     this.storageService.saveCard();
   }
 

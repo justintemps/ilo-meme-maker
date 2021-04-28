@@ -11,6 +11,7 @@ import { ControlPannelComponent } from './control-pannel/control-pannel.componen
 import { CardProvider } from './card-provider.service';
 import { CanvasOptionsComponent } from './canvas-options/canvas-options.component';
 import { StorageProvider } from './storage-provider.service';
+import { SavedCardsComponent } from './saved-cards/saved-cards.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { StorageProvider } from './storage-provider.service';
     CanvasComponent,
     ControlPannelComponent,
     CanvasOptionsComponent,
+    SavedCardsComponent,
   ],
   imports: [
     BrowserModule,
