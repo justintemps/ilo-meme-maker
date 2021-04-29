@@ -426,7 +426,7 @@ export class CanvasComponent implements AfterViewInit, OnInit, OnDestroy {
       // width and height from the image itself. Do the same thing if we know the
       // canvas is blank because it's already been cleared by a use
       const cardIsNew = !this.cardProvider.id;
-      const canvasIsBlank = this.cardProvider.getCard().speakerImg.src;
+      const canvasIsBlank = !this.cardProvider.getCard().speakerImg.src;
       if (cardIsNew || canvasIsBlank) {
         this.cardProvider.updateSpeakerImg({
           imageWidth: this.speakerImg.width,

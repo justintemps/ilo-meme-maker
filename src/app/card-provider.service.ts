@@ -143,16 +143,13 @@ export class CardProvider {
 
   // Initializes a card with initial values or new ones from the cache
   initialize(card?: Card) {
-    const id = card?.id;
+    const id = card?.id ?? null;
     const branding = card?.branding ?? initialBranding;
     const speaker = card?.speaker ?? initialSpeaker;
     const quote = card?.quote ?? initialQuote;
     const speakerImg = card?.speakerImg ?? initialSpeakerImg;
-    // If no id property, assume this is a new card
-    if (id) {
-      this.id = id;
-    }
 
+    this.id = id;
     this.brandingSrc.next(branding);
     this.speakerSrc.next(speaker);
     this.quoteSrc.next(quote);
